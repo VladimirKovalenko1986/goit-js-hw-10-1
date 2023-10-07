@@ -7,14 +7,19 @@ const ENDPOINT_BREED_ID =
 axios.defaults.headers.common['x-api-key'] =
   'live_sjTJ8IvV1LTFMwmFwotiB4uXUsVw1X13h0eAcwHeayPLF8m1ANRte3TYin2v37cD';
 
-function fetchBreeds() {
-  return axios.get(ENDPOINT).then(resp => resp.data);
+async function fetchBreeds() {
+  const respons = await axios.get(ENDPOINT);
+  const responsData = await respons.data;
+  return responsData;
+
+  // return axios.get(ENDPOINT).then(resp => resp.data);
 }
 
-function fetchCatByBreed(breedId) {
-  return axios
-    .get(`https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}`)
-    .then(resp => resp.data);
+async function fetchCatByBreed(breedId) {
+  const respons = await axios.get(`${ENDPOINT_BREED_ID}${breedId}`);
+  const responsData = await respons.data;
+  return responsData;
+  // return axios.get(`${ENDPOINT_BREED_ID}${breedId}`).then(resp => resp.data);
 }
 
 export default { fetchBreeds, fetchCatByBreed };

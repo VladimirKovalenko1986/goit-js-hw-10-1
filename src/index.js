@@ -1,12 +1,21 @@
 import API from './components/cat-api';
 import Notiflix from 'notiflix';
 import 'notiflix/dist/notiflix-3.2.6.min.css';
-const select = document.querySelector('.breed-select');
-const trextLoading = document.querySelector('.loader');
-const textError = document.querySelector('.error');
-const iformatinCat = document.querySelector('.cat-info');
+import SlimSelect from 'slim-select';
+import 'slim-select/dist/slimselect.css';
 
-addHiddenErrorText();
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+const refs = {
+  select: document.querySelector('.js-select'),
+  trextLoading: document.querySelector('.loader'),
+  textError: document.querySelector('.error'),
+  informationCat: document.querySelector('.js-cat-info'),
+};
+
+// @@@@@@@@@@@@@^^^^^^^^^^^^^^^^^^^^*********************
+
+// addHiddenErrorText();
 addHiddenSelect();
 
 // ************************!!!!!!!!!!!!!!!!!!!!!!!!!****************
@@ -15,10 +24,17 @@ API.fetchBreeds()
   .then(data => {
     removeHiddenSelect();
     addHiddenLoadingText();
+
     // console.log(data);
     return data.map(markup => createMarkupBreedsCat(markup)).join('');
   })
-  .then(updateNewListBreedsCat)
+  .then(markup => {
+    updateNewListBreedsCat(markup);
+
+    new SlimSelect({
+      select: '#selectElement',
+    });
+  })
   .catch(err => {
     addHiddenLoadingText();
     onError(err);
@@ -26,16 +42,14 @@ API.fetchBreeds()
 
 // !!!!!!!!!!!!!!!!!!!!!*******************!!!!!!!!!!!!!!!!!!!!!!!!!
 
-select.addEventListener('change', setOutput);
+refs.select.addEventListener('change', setOutput);
 
 function setOutput() {
   clearNewsList();
 
-  const selectedBreedId = select.value;
+  const selectedBreedId = refs.select.value;
   API.fetchCatByBreed(selectedBreedId)
-    .then(data => {
-      return data.map(markup => createMarkupIdNameCat(markup)).join('');
-    })
+    .then(data => data.map(markup => createMarkupIdNameCat(markup)).join(''))
     .then(updateNewListIdNameCat)
     .catch(onError);
 }
@@ -53,9 +67,9 @@ function createMarkupIdNameCat({ breeds, url }) {
       <img src="${url}" alt="${alt_names}">
     </div>
     <div class="conteiner-text">
-      <h2>${name}</h2>
-      <p>${description}</p>
-      <p><b>Temperament: </b>${temperament}</p>
+      <h2 class = "cat-name">${name}</h2>
+      <p class = "cat-text">${description}</p>
+      <p class = "cat-pre-text"><b>Temperament: </b>${temperament}</p>
     </div>
         `;
 }
@@ -63,11 +77,11 @@ function createMarkupIdNameCat({ breeds, url }) {
 // !!!!!!!!!!!!!!!!!!!!!*******************!!!!!!!!!!!!!!!!!!!!!!!!!
 
 function updateNewListIdNameCat(markup) {
-  iformatinCat.insertAdjacentHTML('beforeend', markup);
+  refs.informationCat.insertAdjacentHTML('beforeend', markup);
 }
 
 function updateNewListBreedsCat(markup) {
-  select.insertAdjacentHTML('beforeend', markup);
+  refs.select.insertAdjacentHTML('beforeend', markup);
 }
 
 // ************************!!!!!!!!!!!!!!!!!!!!!!!!!****************
@@ -80,29 +94,29 @@ function onError(err) {
 }
 
 function addHiddenLoadingText() {
-  trextLoading.classList.add('hidden');
+  refs.trextLoading.classList.add('hidden');
 }
 
 function removeHiddenErrorText() {
-  trextLoading.classList.remove('hidden');
+  refs.trextLoading.classList.remove('hidden');
 }
 
 function addHiddenErrorText() {
-  textError.classList.add('hidden');
+  refs.textError.classList.add('hidden');
 }
 
 function removeHiddenLoadingText() {
-  textError.classList.remove('hidden');
+  refs.textError.classList.remove('hidden');
 }
 
 function addHiddenSelect() {
-  select.classList.add('hidden');
+  refs.select.classList.add('hidden');
 }
 
 function removeHiddenSelect() {
-  select.classList.remove('hidden');
+  refs.select.classList.remove('hidden');
 }
 
 function clearNewsList() {
-  document.querySelector('.cat-info').innerHTML = '';
+  refs.informationCat.innerHTML = '';
 }
