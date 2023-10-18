@@ -4,7 +4,7 @@ import 'notiflix/dist/notiflix-3.2.6.min.css';
 import SlimSelect from 'slim-select';
 import 'slim-select/dist/slimselect.css';
 
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// !!!!!!!!!!!!!!!!!!  LINKS  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 const refs = {
   select: document.querySelector('.js-select'),
@@ -13,12 +13,10 @@ const refs = {
   informationCat: document.querySelector('.js-cat-info'),
 };
 
-// @@@@@@@@@@@@@^^^^^^^^^^^^^^^^^^^^*********************
-
 // addHiddenErrorText();
 addHiddenSelect();
 
-// ************************!!!!!!!!!!!!!!!!!!!!!!!!!****************
+// *************!!!!!!   LOADING FUNCTIONS PAGE  !!!!!!!!!!!!!!!!!!!****************
 
 API.fetchBreeds()
   .then(data => {
@@ -36,7 +34,6 @@ API.fetchBreeds()
     });
   })
   .catch(err => {
-    addHiddenLoadingText();
     onError(err);
   });
 
@@ -54,7 +51,7 @@ function setOutput() {
     .catch(onError);
 }
 
-// ************************!!!!!!!!!!!!!!!!!!!!!!!!!****************
+// ************************!!!!!! FUNCTIONS !!!!!!!!!!!!!!!!!!!****************
 
 function createMarkupBreedsCat({ id, name }) {
   return `<option value="${id}">${name}</option>`;
@@ -73,8 +70,6 @@ function createMarkupIdNameCat({ breeds, url }) {
     </div>
         `;
 }
-
-// !!!!!!!!!!!!!!!!!!!!!*******************!!!!!!!!!!!!!!!!!!!!!!!!!
 
 function updateNewListIdNameCat(markup) {
   refs.informationCat.insertAdjacentHTML('beforeend', markup);

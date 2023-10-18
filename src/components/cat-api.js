@@ -1,5 +1,4 @@
 import axios from 'axios';
-import Notiflix from 'notiflix';
 import 'notiflix/dist/notiflix-3.2.6.min.css';
 const ENDPOINT = 'https://api.thecatapi.com/v1/breeds';
 const ENDPOINT_BREED_ID =
