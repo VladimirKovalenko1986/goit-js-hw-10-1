@@ -23,11 +23,8 @@ API.fetchBreeds()
     removeHiddenSelect();
     addHiddenLoadingText();
 
-    // console.log(data);
-    return data.map(markup => createMarkupBreedsCat(markup)).join('');
-  })
-  .then(markup => {
-    updateNewListBreedsCat(markup);
+    const markup = createMarkupBreedsCat(data);
+    updateNewListCat(markup, refs.select);
 
     new SlimSelect({
       select: '#selectElement',
@@ -46,20 +43,24 @@ function setOutput() {
 
   const selectedBreedId = refs.select.value;
   API.fetchCatByBreed(selectedBreedId)
-    .then(data => data.map(markup => createMarkupIdNameCat(markup)).join(''))
-    .then(updateNewListIdNameCat)
+    .then(data => {
+      const markup = createMarkupIdNameCat(data);
+      updateNewListCat(markup, refs.informationCat);
+    })
     .catch(onError);
 }
 
 // ************************!!!!!! FUNCTIONS !!!!!!!!!!!!!!!!!!!****************
 
-function createMarkupBreedsCat({ id, name }) {
-  return `<option value="${id}">${name}</option>`;
+function createMarkupBreedsCat(arr) {
+  return arr.map(({ id, name }) => `<option value="${id}">${name}</option>`);
 }
 
-function createMarkupIdNameCat({ breeds, url }) {
-  const { name, alt_names, description, temperament } = breeds[0];
-  return `
+function createMarkupIdNameCat(arr) {
+  return arr
+    .map(({ breeds, url }) => {
+      const { name, alt_names, description, temperament } = breeds[0];
+      return `
     <div class="conteiner-img">
       <img src="${url}" alt="${alt_names}">
     </div>
@@ -69,14 +70,12 @@ function createMarkupIdNameCat({ breeds, url }) {
       <p class = "cat-pre-text"><b>Temperament: </b>${temperament}</p>
     </div>
         `;
+    })
+    .join('');
 }
 
-function updateNewListIdNameCat(markup) {
-  refs.informationCat.insertAdjacentHTML('beforeend', markup);
-}
-
-function updateNewListBreedsCat(markup) {
-  refs.select.insertAdjacentHTML('beforeend', markup);
+function updateNewListCat(markup, element) {
+  element.insertAdjacentHTML('beforeend', markup);
 }
 
 // ************************!!!!!!!!!!!!!!!!!!!!!!!!!****************
