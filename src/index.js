@@ -1,56 +1,51 @@
-import API from './components/cat-api';
+import NewApiCat from './components/cat-api';
+import { getRefs } from './components/refs';
+import { ElementsStatusLoading } from './components/elementStatus';
+import { ElementSelect } from './components/statusElementSelect';
 import Notiflix from 'notiflix';
 import 'notiflix/dist/notiflix-3.2.6.min.css';
 import SlimSelect from 'slim-select';
 import 'slim-select/dist/slimselect.css';
 
-// !!!!!!!!!!!!!!!!!!  LINKS  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+const refs = getRefs();
 
-const refs = {
-  select: document.querySelector('.js-select'),
-  trextLoading: document.querySelector('.loader'),
-  textError: document.querySelector('.error'),
-  informationCat: document.querySelector('.js-cat-info'),
-};
+const apiCat = new NewApiCat();
+const elementsStatusLoading = new ElementsStatusLoading({
+  selector: '.loader',
+  isHidden: false,
+});
 
-// addHiddenErrorText();
-addHiddenSelect();
+const elemetStatusSelect = new ElementSelect({
+  selector: '#selectElement',
+  isHidden: false,
+});
 
-// *************!!!!!!   LOADING FUNCTIONS PAGE  !!!!!!!!!!!!!!!!!!!****************
-
-API.fetchBreeds()
+apiCat
+  .fetchBreeds()
   .then(data => {
-    removeHiddenSelect();
-    addHiddenLoadingText();
-
     const markup = createMarkupBreedsCat(data);
-    updateNewListCat(markup, refs.select);
+    updateNewListCat(markup, elemetStatusSelect.select);
+    elementsStatusLoading.hide();
 
     new SlimSelect({
       select: '#selectElement',
     });
   })
-  .catch(err => {
-    onError(err);
-  });
+  .catch(onError);
 
-// !!!!!!!!!!!!!!!!!!!!!*******************!!!!!!!!!!!!!!!!!!!!!!!!!
-
-refs.select.addEventListener('change', setOutput);
+elemetStatusSelect.select.addEventListener('change', setOutput);
 
 function setOutput() {
-  clearNewsList();
+  const selectedBreedId = elemetStatusSelect.select.value;
 
-  const selectedBreedId = refs.select.value;
-  API.fetchCatByBreed(selectedBreedId)
+  apiCat
+    .fetchCatByBreed(selectedBreedId)
     .then(data => {
       const markup = createMarkupIdNameCat(data);
       updateNewListCat(markup, refs.informationCat);
     })
     .catch(onError);
 }
-
-// ************************!!!!!! FUNCTIONS !!!!!!!!!!!!!!!!!!!****************
 
 function createMarkupBreedsCat(arr) {
   return arr.map(({ id, name }) => `<option value="${id}">${name}</option>`);
@@ -75,42 +70,14 @@ function createMarkupIdNameCat(arr) {
 }
 
 function updateNewListCat(markup, element) {
-  element.insertAdjacentHTML('beforeend', markup);
+  element.innerHTML = markup;
 }
-
-// ************************!!!!!!!!!!!!!!!!!!!!!!!!!****************
 
 function onError(err) {
   console.log(err);
   Notiflix.Notify.failure(
     'Oops! Something went wrong! Try reloading the page!'
   );
-}
-
-function addHiddenLoadingText() {
-  refs.trextLoading.classList.add('hidden');
-}
-
-function removeHiddenErrorText() {
-  refs.trextLoading.classList.remove('hidden');
-}
-
-function addHiddenErrorText() {
-  refs.textError.classList.add('hidden');
-}
-
-function removeHiddenLoadingText() {
-  refs.textError.classList.remove('hidden');
-}
-
-function addHiddenSelect() {
-  refs.select.classList.add('hidden');
-}
-
-function removeHiddenSelect() {
-  refs.select.classList.remove('hidden');
-}
-
-function clearNewsList() {
-  refs.informationCat.innerHTML = '';
+  // elementsStatusLoading.show();
+  elemetStatusSelect.hide();
 }
