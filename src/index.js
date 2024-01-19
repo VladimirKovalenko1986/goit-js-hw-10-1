@@ -35,16 +35,16 @@ apiCat
 
 elemetStatusSelect.select.addEventListener('change', setOutput);
 
-function setOutput() {
+async function setOutput() {
   const selectedBreedId = elemetStatusSelect.select.value;
+  try {
+    const catData = await apiCat.fetchCatByBreed(selectedBreedId);
 
-  apiCat
-    .fetchCatByBreed(selectedBreedId)
-    .then(data => {
-      const markup = createMarkupIdNameCat(data);
-      updateNewListCat(markup, refs.informationCat);
-    })
-    .catch(onError);
+    const markup = createMarkupIdNameCat(catData);
+    updateNewListCat(markup, refs.informationCat);
+  } catch (error) {
+    onError(error);
+  }
 }
 
 function createMarkupBreedsCat(arr) {
@@ -78,6 +78,5 @@ function onError(err) {
   Notiflix.Notify.failure(
     'Oops! Something went wrong! Try reloading the page!'
   );
-  // elementsStatusLoading.show();
   elemetStatusSelect.hide();
 }

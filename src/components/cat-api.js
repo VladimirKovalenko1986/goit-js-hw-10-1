@@ -9,19 +9,19 @@ export default class NewApiCat {
   }
 
   async fetchBreeds() {
-    const respons = await axios.get(`${BASE_URL}/breeds`);
-    const responsData = await respons.data;
-    return responsData;
+    const response = await axios.get(`${BASE_URL}/breeds`);
+    const responseData = await response.data;
+    return responseData;
 
     // return axios.get(ENDPOINT).then(resp => resp.data);
   }
 
   async fetchCatByBreed(breedId) {
-    const respons = await axios.get(
+    const response = await axios.get(
       `${BASE_URL}/images/search?breed_ids=${breedId}`
     );
-    const responsData = await respons.data;
-    return responsData;
+    const responseData = await response.data;
+    return responseData;
     // return axios.get(`${ENDPOINT_BREED_ID}${breedId}`).then(resp => resp.data);
   }
 }
